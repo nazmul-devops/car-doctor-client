@@ -1,6 +1,8 @@
 import { Helmet } from "react-helmet-async";
 import Header from "../../shared/Header";
 import Slider from "./Slider";
+import Footer from "../../shared/Footer";
+import AboutUs from "./AboutUs";
 
 const Home = () => {
   return (
@@ -10,7 +12,8 @@ const Home = () => {
       </Helmet>
       <Header></Header>
       <Slider></Slider>
-      <h1>Car Doctor Client</h1>
+      <AboutUs></AboutUs>
+      <Footer></Footer>
     </div>
   );
 };
