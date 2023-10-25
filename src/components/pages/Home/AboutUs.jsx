@@ -17,7 +17,7 @@ const AboutUs = () => {
               alt=""
             />
           </div>
-          <div className="w-full mt-12 md:w-1/2 lg:w-1/2">
+          <div className="w-full mt-12 md:mt-32 md:w-1/2 lg:w-1/2">
             <h3 className="text-xl font-bold text-[#FF3811] pb-5">About Us</h3>
             <h1 className="text-2xl lg:text-5xl font-bold">
               We are qualified <br /> & of experience <br /> in this field
