@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 const Services = () => {
   const [services, setServices] = useState([]);
   useEffect(() => {
-    fetch("./services.json")
+    fetch("http://localhost:5002/services")
       .then(res => res.json())
       .then(data => setServices(data));
   }, []);
@@ -37,7 +37,7 @@ const Services = () => {
                   <h2 className="text-xl font-semibold text-[#FF3811]">
                     Price : ${service.price}
                   </h2>
-                  <Link to="/">
+                  <Link to="/checkout">
                     <button>
                       <BsArrowRight className="text-[#FF3811] text-xl"></BsArrowRight>
                     </button>
@@ -153,7 +153,9 @@ const Services = () => {
           </svg>
           <div>
             <p className="pb-3">Need a repair? our address</p>
-            <h3 className="text-xl md:text-2xl font-bold">Liza Street, New York</h3>
+            <h3 className="text-xl md:text-2xl font-bold">
+              Liza Street, New York
+            </h3>
           </div>
         </div>
       </div>
