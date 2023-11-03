@@ -10,7 +10,7 @@ const Services = () => {
       .then(data => setServices(data));
   }, []);
   return (
-    <div className="max-w-7xl mx-auto">
+    <div id="service" className="max-w-7xl mx-auto">
       <div className="w-full mt-12 text-center space-y-5">
         <h3 className="text-xl font-bold text-[#FF3811]">Service</h3>
         <h1 className="text-2xl lg:text-5xl font-bold">Our Service Area</h1>
@@ -37,12 +37,15 @@ const Services = () => {
                   <h2 className="text-xl font-semibold text-[#FF3811]">
                     Price : ${service.price}
                   </h2>
-                  <Link to="/checkout">
+                  <Link to={`/checkout/${service._id}`}>
                     <button>
                       <BsArrowRight className="text-[#FF3811] text-xl"></BsArrowRight>
                     </button>
                   </Link>
                 </div>
+                <Link className="btn btn-sm" to={`/checkout/${service._id}`}>
+                  <button>Book Now</button>
+                </Link>
               </div>
             </div>
           ))}

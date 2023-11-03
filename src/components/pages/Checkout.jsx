@@ -3,8 +3,56 @@ import Header from "../shared/Header";
 
 import checkoutImage from "../../assets/images/checkout/checkout.png";
 import { Helmet } from "react-helmet-async";
+import { useLoaderData, useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import { AuthContext } from "../../providers/AuthProvider";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Checkout = () => {
+  const { user } = useContext(AuthContext);
+  const service = useLoaderData();
+  const { title, _id, price, img } = service;
+  const navigate = useNavigate();
+
+  const handleBookService = e => {
+    e.preventDefault();
+
+    const form = e.target;
+    const full_name = form.full_name.value;
+    const phone = form.phone.value;
+    const email = form.email.value;
+    const price = form.price.value;
+    const date = form.date.value;
+    const message = form.message.value;
+    const booking = {
+      customerName: full_name,
+      phone,
+      email,
+      date,
+      img,
+      price,
+      message,
+      service: title,
+      service_id: _id,
+    };
+    console.log(booking);
+
+    fetch("http://localhost:5002/bookings/", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(booking),
+    })
+      .then(res => res.json())
+      .then(data => {
+        console.log(data);
+      });
+    toast.success("You booked successfully.");
+    navigate("/");
+  };
+
   return (
     <div>
       <Helmet>
@@ -28,38 +76,55 @@ const Checkout = () => {
 
         <div className="my-32">
           <div className="hero h-auto md:p-24 bg-base-200 rounded-xl">
-            <div className="w-full">
-              <form className="card-body grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="card w-full">
+              <h2 className="text-center text-3xl">Book Service: {title}</h2>
+              <form
+                onSubmit={handleBookService}
+                className="card-body grid grid-cols-1 md:grid-cols-2 gap-6"
+              >
                 <div className="form-control">
                   <input
                     type="text"
-                    placeholder="First Name"
+                    placeholder="Full Name"
+                    defaultValue={user.displayName}
+                    name="full_name"
                     className="input input-bordered"
                     required
                   />
                 </div>
-                <div className="form-control">
-                  <input
-                    type="text"
-                    placeholder="Last Name"
-                    className="input input-bordered"
-                    required
-                  />
-                </div>
-                <div className="form-control">
 
+                <div className="form-control">
                   <input
                     type="text"
                     placeholder="Your Phone"
+                    name="phone"
                     className="input input-bordered"
                     required
                   />
                 </div>
                 <div className="form-control">
-
                   <input
                     type="text"
+                    name="email"
                     placeholder="Your Email"
+                    defaultValue={user.email}
+                    className="input input-bordered"
+                    required
+                  />
+                </div>
+                <div className="form-control">
+                  <input
+                    type="date"
+                    name="date"
+                    className="input input-bordered"
+                    required
+                  />
+                </div>
+                <div className="form-control col-span-2">
+                  <input
+                    type="text"
+                    name="price"
+                    defaultValue={"$ " + price}
                     className="input input-bordered"
                     required
                   />
@@ -68,6 +133,7 @@ const Checkout = () => {
                 <div className="form-control col-span-2">
                   <textarea
                     placeholder="Your Message"
+                    name="message"
                     className="textarea textarea-bordered textarea-lg"
                   ></textarea>
                 </div>
@@ -80,6 +146,7 @@ const Checkout = () => {
             </div>
           </div>
         </div>
+        <ToastContainer></ToastContainer>
       </div>
       <Footer></Footer>
     </div>

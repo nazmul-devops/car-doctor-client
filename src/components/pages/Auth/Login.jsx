@@ -1,10 +1,75 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Footer from "../../shared/Footer";
 import Header from "../../shared/Header";
 import loginImage from "../../../assets/images/login/login.svg";
 import { Helmet } from "react-helmet-async";
+import { FcGoogle } from "react-icons/fc";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useContext, useEffect, useState } from "react";
+import { AuthContext } from "../../../providers/AuthProvider";
 
 const Login = () => {
+  const [showToast, setShowToast] = useState(false);
+
+  const { signInUser, googleSignIn } = useContext(AuthContext);
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (showToast) {
+      toast.success("You have Signed In successfully.", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
+    }
+  }, [showToast]);
+
+  // Email & password sign in
+  const handleSignIn = async e => {
+    e.preventDefault();
+    const email = e.target.email.value;
+    const password = e.target.password.value;
+
+    signInUser(email, password)
+      .then(result => {
+        console.log(result.user);
+        setShowToast(true);
+        setTimeout(() => {
+          navigate("/");
+        }, 1000);
+      })
+      .catch(error => {
+        if (email === "auth/user-not-found") {
+          toast.error("Email not found. Please check your email.");
+        } else if (error.code === "auth/wrong-password") {
+          toast.error("Incorrect password. Please try again.");
+        } else {
+          toast.error("An unexpected error occurred. Please try again.");
+        }
+      });
+  };
+
+  // Google Sign In
+  const handleGoogleSignIn = () => {
+    googleSignIn()
+      .then(result => {
+        console.log(result.user);
+        setShowToast(true);
+        setTimeout(() => {
+          navigate("/");
+        }, 1000);
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  };
   return (
     <div>
       <Helmet>
@@ -17,7 +82,7 @@ const Login = () => {
             <img src={loginImage} alt="" />
           </div>
           <div className="card w-full max-w-md border-2 shadow-xl">
-            <form className="card-body">
+            <form onSubmit={handleSignIn} className="card-body">
               <h1 className="text-4xl font-bold text-center">Login</h1>
               <div className="form-control">
                 <label className="label">
@@ -47,27 +112,14 @@ const Login = () => {
                 </label>
               </div>
               <div className="form-control mt-6 space-y-5 text-center">
-                <button className="btn bg-[#FF3811]  text-white hover:bg-orange-700">Sign In</button>
+                <button className="btn bg-[#FF3811]  text-white hover:bg-orange-700">
+                  Sign In
+                </button>
                 <p>Or Sign In With</p>
                 <div className="flex gap-6 justify-center items-center">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="55"
-                    height="55"
-                    viewBox="0 0 55 55"
-                    fill="none"
-                  >
-                    <circle cx="27.5" cy="27.5" r="27.5" fill="#F5F5F8" />
-                  </svg>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="55"
-                    height="55"
-                    viewBox="0 0 55 55"
-                    fill="none"
-                  >
-                    <circle cx="27.5" cy="27.5001" r="27.5" fill="#F5F5F8" />
-                  </svg>
+                  <button className="btn" onClick={handleGoogleSignIn}>
+                    Sign in with <FcGoogle></FcGoogle>
+                  </button>
                 </div>
                 <p>
                   Do not have an account?{" "}
@@ -79,6 +131,7 @@ const Login = () => {
             </form>
           </div>
         </div>
+        <ToastContainer></ToastContainer>
       </div>
       <Footer></Footer>
     </div>

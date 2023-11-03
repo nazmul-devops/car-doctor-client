@@ -1,5 +1,6 @@
 import { HelmetProvider } from "react-helmet-async";
-
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App.jsx";
@@ -11,6 +12,7 @@ import About from "./components/pages/About.jsx";
 import Login from "./components/pages/Auth/Login.jsx";
 import SignUp from "./components/pages/Auth/SignUp.jsx";
 import Checkout from "./components/pages/Checkout.jsx";
+import AuthProvider from "./providers/AuthProvider.jsx";
 
 const router = createBrowserRouter([
   {
@@ -34,8 +36,10 @@ const router = createBrowserRouter([
         element: <SignUp></SignUp>,
       },
       {
-        path: "/checkout",
+        path: "/checkout/:id",
         element: <Checkout></Checkout>,
+        loader: ({ params }) =>
+          fetch(`http://localhost:5002/services/${params.id}`),
       },
     ],
   },
@@ -43,8 +47,11 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
-    <HelmetProvider>
-      <RouterProvider router={router} />
-    </HelmetProvider>
+    <AuthProvider>
+      <HelmetProvider>
+        <RouterProvider router={router} />
+        <ToastContainer />
+      </HelmetProvider>
+    </AuthProvider>
   </React.StrictMode>
 );

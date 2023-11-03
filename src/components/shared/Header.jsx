@@ -2,8 +2,30 @@ import { Link, NavLink } from "react-router-dom";
 import logo from "../../assets/logo.svg";
 import { BsHandbag } from "react-icons/bs";
 import { BsSearch } from "react-icons/bs";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useContext } from "react";
+import { AuthContext } from "../../providers/AuthProvider";
 
 const Header = () => {
+  const { user, signOutUser } = useContext(AuthContext);
+
+  const handleSignOutUser = () => {
+    signOutUser()
+      .then(() => console.log("User logged out successfully."))
+      .catch(error => console.error(error));
+    toast.success("Log Out successfully.", {
+      position: "top-right",
+      autoClose: 3000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
+  };
+
   const navLinks = (
     <>
       <li>
@@ -16,14 +38,24 @@ const Header = () => {
         <NavLink to="/services">Services</NavLink>
       </li>
       <li>
-        <NavLink to="/blog">Blog</NavLink>
-      </li>
-      <li>
         <NavLink to="/contact">Contact</NavLink>
       </li>
-      <li>
-        <NavLink to="/login">Login</NavLink>
-      </li>
+      {user ? (
+        <>
+          <li>
+            <a href="">{user.displayName || user.email}</a>
+          </li>
+          <li>
+            <NavLink onClick={handleSignOutUser} to="/login">
+              Log Out
+            </NavLink>
+          </li>
+        </>
+      ) : (
+        <li>
+          <NavLink to="/login">Login</NavLink>
+        </li>
+      )}
     </>
   );
   return (
@@ -72,6 +104,7 @@ const Header = () => {
           </Link>
         </div>
       </div>
+      <ToastContainer></ToastContainer>
     </div>
   );
 };
